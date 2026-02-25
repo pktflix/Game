@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>PKT Arcade</title>
+<title>PKT Premium Arcade</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -14,133 +14,118 @@ body{
 }
 
 /* header */
-.header{
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 20px;
   background:#020617;
-  padding:16px;
-  font-size:24px;
-  font-weight:bold;
   border-bottom:1px solid #1e293b;
 }
 
-/* player */
-.player-wrap{
-  padding:10px;
+.logo{
+  font-size:22px;
+  font-weight:bold;
 }
 
-#game{
-  width:100%;
-  max-width:900px;
-  height:520px;
-  margin:auto;
-  background:black;
+/* search */
+.search{
+  padding:8px 12px;
+  border-radius:8px;
+  border:none;
+  background:#1e293b;
+  color:white;
+  width:180px;
 }
 
-/* rows */
-.row{
-  margin:20px 0;
-}
-
-.row-title{
-  padding:0 15px;
-  font-size:18px;
-  margin-bottom:10px;
-}
-
-/* horizontal scroll */
-.game-row{
+/* hero */
+.hero{
+  height:180px;
+  background:linear-gradient(90deg,#001d3d,#000814);
   display:flex;
-  overflow-x:auto;
-  gap:12px;
-  padding:0 15px;
+  align-items:center;
+  padding-left:20px;
+  font-size:26px;
+  font-weight:bold;
+}
+
+/* grid */
+.grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill,minmax(160px,1fr));
+  gap:18px;
+  padding:20px;
 }
 
 .card{
-  min-width:160px;
-  height:90px;
-  background:#1e293b;
-  border-radius:10px;
+  background:#0f172a;
+  border-radius:14px;
+  overflow:hidden;
   cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:14px;
-  transition:0.25s;
+  transition:.25s;
+  box-shadow:0 0 0 rgba(0,0,0,0);
 }
 
 .card:hover{
-  transform:scale(1.08);
-  background:#334155;
+  transform:translateY(-6px) scale(1.04);
+  box-shadow:0 10px 25px rgba(0,0,0,.6);
+}
+
+.card img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+}
+
+.title{
+  padding:10px;
+  text-align:center;
+  font-size:14px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">🎮 PKT Arcade</div>
-
-<div class="player-wrap">
-  <div id="game"></div>
+<div class="topbar">
+  <div class="logo">🎮 PKT Arcade</div>
+  <input class="search" placeholder="Search game..." onkeyup="searchGame(this.value)">
 </div>
 
-<!-- ACTION ROW -->
-<div class="row">
-  <div class="row-title">🔥 Popular Games</div>
-  <div class="game-row">
-
-    <div class="card" onclick="loadGame('dino.zip','arcade')">
-      Cadillacs & Dinosaurs
-    </div>
-
-    <div class="card" onclick="loadGame('kof97.zip','neogeo')">
-      KOF 97
-    </div>
-
-    <div class="card" onclick="loadGame('metal_slug.zip','neogeo')">
-      Metal Slug
-    </div>
-
-  </div>
+<div class="hero">
+🔥 Play Classic Arcade Games Online
 </div>
 
-<!-- FIGHTING ROW -->
-<div class="row">
-  <div class="row-title">🥊 Fighting Games</div>
-  <div class="game-row">
+<div class="grid" id="gameGrid">
 
-    <div class="card" onclick="loadGame('kof97.zip','neogeo')">
-      King of Fighters 97
-    </div>
-
-    <div class="card" onclick="loadGame('dino.zip','arcade')">
-      Cadillacs & Dinosaurs
-    </div>
-
+  <div class="card" data-name="dino" onclick="openGame('dino.zip','arcade')">
+    <img src="images/dino.jpg">
+    <div class="title">Cadillacs & Dinosaurs</div>
   </div>
+
+  <div class="card" data-name="kof97" onclick="openGame('kof97.zip','neogeo')">
+    <img src="images/kof97.jpg">
+    <div class="title">King of Fighters 97</div>
+  </div>
+
+  <div class="card" data-name="metal slug" onclick="openGame('metal_slug.zip','neogeo')">
+    <img src="images/metal_slug.jpg">
+    <div class="title">Metal Slug</div>
+  </div>
+
 </div>
 
 <script>
-let emulatorLoaded = false;
+function openGame(rom, core){
+  window.open("play.html?rom="+rom+"&core="+core,"_blank");
+}
 
-function loadGame(rom, core){
-
-  document.getElementById("game").innerHTML = "";
-
-  window.EJS_player = "#game";
-  window.EJS_core = core;
-  window.EJS_gameUrl = "./" + rom;
-  window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-
-  if(!emulatorLoaded){
-    let script = document.createElement("script");
-    script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
-    document.body.appendChild(script);
-    emulatorLoaded = true;
-  } else {
-    EJS_emulator = null;
-    let script = document.createElement("script");
-    script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
-    document.body.appendChild(script);
-  }
+function searchGame(q){
+  q = q.toLowerCase();
+  document.querySelectorAll(".card").forEach(card=>{
+    card.style.display =
+      card.dataset.name.includes(q) ? "block" : "none";
+  });
 }
 </script>
 
