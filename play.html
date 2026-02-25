@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Play Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  background:#000;
+  color:white;
+  text-align:center;
+  font-family:Arial;
+}
+
+.top{
+  padding:12px;
+  background:#020617;
+}
+
+#game{
+  width:100%;
+  max-width:900px;
+  height:520px;
+  margin:auto;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">🎮 Now Playing</div>
+<div id="game"></div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const rom = params.get("rom");
+const core = params.get("core");
+
+EJS_player = "#game";
+EJS_core = core;
+EJS_gameUrl = "./" + rom;
+EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
+</script>
+
+<script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+
+</body>
+</html>
