@@ -2,23 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Cadillacs & Dinosaurs - Ultra Arcade</title>
+<title>PKT Arcade</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
   margin:0;
-  background:#000814;
+  background:#020617;
   font-family:Arial;
   color:white;
-  text-align:center;
 }
 
+/* header */
 .header{
-  background:#001d3d;
-  padding:12px;
-  font-size:20px;
+  background:#020617;
+  padding:16px;
+  font-size:24px;
   font-weight:bold;
+  border-bottom:1px solid #1e293b;
+}
+
+/* player */
+.player-wrap{
+  padding:10px;
 }
 
 #game{
@@ -29,113 +35,112 @@ body{
   background:black;
 }
 
-/* Control Panel */
-.controls{
-  margin-top:10px;
-  padding-bottom:20px;
-}
-
+/* rows */
 .row{
-  display:flex;
-  justify-content:center;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:10px;
+  margin:20px 0;
 }
 
-.btn{
-  width:65px;
-  height:65px;
-  border-radius:50%;
-  border:none;
+.row-title{
+  padding:0 15px;
   font-size:18px;
-  font-weight:bold;
-  color:white;
-  background:#003566;
+  margin-bottom:10px;
 }
 
-.btn:active{
-  background:#ff5400;
+/* horizontal scroll */
+.game-row{
+  display:flex;
+  overflow-x:auto;
+  gap:12px;
+  padding:0 15px;
 }
 
-.big{
-  width:80px;
-  height:80px;
-  font-size:22px;
+.card{
+  min-width:160px;
+  height:90px;
+  background:#1e293b;
+  border-radius:10px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  transition:0.25s;
 }
 
-.fullscreen{
-  background:#38b000;
-  border-radius:12px;
-  width:140px;
-  height:45px;
+.card:hover{
+  transform:scale(1.08);
+  background:#334155;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">🎮 Cadillacs & Dinosaurs - ULTRA</div>
+<div class="header">🎮 PKT Arcade</div>
 
-<div id="game"></div>
+<div class="player-wrap">
+  <div id="game"></div>
+</div>
 
-<div class="controls">
+<!-- ACTION ROW -->
+<div class="row">
+  <div class="row-title">🔥 Popular Games</div>
+  <div class="game-row">
 
-  <!-- Movement -->
-  <div class="row">
-    <button class="btn" ontouchstart="press('arrowleft')" ontouchend="release('arrowleft')">◀</button>
-    <button class="btn" ontouchstart="press('arrowup')" ontouchend="release('arrowup')">▲</button>
-    <button class="btn" ontouchstart="press('arrowdown')" ontouchend="release('arrowdown')">▼</button>
-    <button class="btn" ontouchstart="press('arrowright')" ontouchend="release('arrowright')">▶</button>
+    <div class="card" onclick="loadGame('dino.zip','arcade')">
+      Cadillacs & Dinosaurs
+    </div>
+
+    <div class="card" onclick="loadGame('kof97.zip','neogeo')">
+      KOF 97
+    </div>
+
+    <div class="card" onclick="loadGame('metal_slug.zip','neogeo')">
+      Metal Slug
+    </div>
+
   </div>
+</div>
 
-  <!-- Action Buttons -->
-  <div class="row">
-    <button class="btn big" ontouchstart="press('z')" ontouchend="release('z')">A</button>
-    <button class="btn big" ontouchstart="press('x')" ontouchend="release('x')">B</button>
-    <button class="btn big" ontouchstart="press('c')" ontouchend="release('c')">C</button>
+<!-- FIGHTING ROW -->
+<div class="row">
+  <div class="row-title">🥊 Fighting Games</div>
+  <div class="game-row">
+
+    <div class="card" onclick="loadGame('kof97.zip','neogeo')">
+      King of Fighters 97
+    </div>
+
+    <div class="card" onclick="loadGame('dino.zip','arcade')">
+      Cadillacs & Dinosaurs
+    </div>
+
   </div>
-
-  <!-- System -->
-  <div class="row">
-    <button class="btn" onclick="coin()">COIN</button>
-    <button class="btn" onclick="start()">START</button>
-    <button class="btn fullscreen" onclick="goFull()">FULLSCREEN</button>
-  </div>
-
 </div>
 
 <script>
-EJS_player = "#game";
-EJS_core = "arcade";
-EJS_gameUrl = "./dino.zip"; // তোমার ROM নাম
-EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-</script>
+let emulatorLoaded = false;
 
-<script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+function loadGame(rom, core){
 
-<script>
-function press(key){
-  if(EJS_emulator) EJS_emulator.gameManager.pressKey(key);
-}
+  document.getElementById("game").innerHTML = "";
 
-function release(key){
-  if(EJS_emulator) EJS_emulator.gameManager.releaseKey(key);
-}
+  window.EJS_player = "#game";
+  window.EJS_core = core;
+  window.EJS_gameUrl = "./" + rom;
+  window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
 
-function coin(){
-  press("shift");
-  setTimeout(()=>release("shift"),200);
-}
-
-function start(){
-  press("enter");
-  setTimeout(()=>release("enter"),200);
-}
-
-function goFull(){
-  let el=document.getElementById("game");
-  if(el.requestFullscreen) el.requestFullscreen();
+  if(!emulatorLoaded){
+    let script = document.createElement("script");
+    script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+    document.body.appendChild(script);
+    emulatorLoaded = true;
+  } else {
+    EJS_emulator = null;
+    let script = document.createElement("script");
+    script.src = "https://cdn.emulatorjs.org/stable/data/loader.js";
+    document.body.appendChild(script);
+  }
 }
 </script>
 
